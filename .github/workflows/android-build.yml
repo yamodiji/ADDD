@@ -33,6 +33,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
+    - name: Clean project
+      run: ./gradlew clean
+      
     - name: Run lint
       run: ./gradlew lint
       
@@ -110,7 +113,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
@@ -146,13 +149,10 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
-        tag_name: v${{ steps.version.outputs.version }}
-        release_name: Smart Drawer v${{ steps.version.outputs.version }}
+        tag: v${{ steps.version.outputs.version }}
+        name: Smart Drawer v${{ steps.version.outputs.version }}
         body: |
           ## Smart Drawer Release v${{ steps.version.outputs.version }}
           
@@ -171,15 +171,7 @@ jobs:
           4. Configure settings as desired
           
           **Target SDK:** 34 | **Min SDK:** 23 | **APK Size:** < 2.5MB
+        artifacts: app/build/outputs/apk/release/app-release.apk
         draft: false
         prerelease: false
-        
-    - name: Upload Release APK
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: app/build/outputs/apk/release/app-release.apk
-        asset_name: smart-drawer-v${{ steps.version.outputs.version }}.apk
-        asset_content_type: application/vnd.android.package-archive
+        token: ${{ secrets.GITHUB_TOKEN }}
