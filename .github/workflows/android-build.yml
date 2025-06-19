@@ -37,6 +37,19 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
+    - name: Generate debug keystore
+      run: |
+        mkdir -p ~/.android
+        echo "y" | keytool -genkey -v \
+          -keystore ~/.android/debug.keystore \
+          -storepass android \
+          -alias androiddebugkey \
+          -keypass android \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -dname "CN=Android Debug,O=Android,C=US" || echo "Keystore already exists or generated"
+      
     - name: Clean project
       run: ./gradlew clean
       
@@ -132,7 +145,24 @@ jobs:
       with:
         name: release-apk
         path: ./apk-download/
-      
+        
+    - name: Validate APK
+      run: |
+        echo "Validating APK files..."
+        for apk in ./apk-download/*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found APK: $apk"
+            ls -lh "$apk"
+            # Check if APK is not empty
+            if [ -s "$apk" ]; then
+              echo "APK size is valid: $(du -h "$apk")"
+            else
+              echo "ERROR: APK is empty!"
+              exit 1
+            fi
+          fi
+        done
+        
     - name: Get version name
       id: version
       run: |

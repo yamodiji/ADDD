@@ -13,6 +13,7 @@ This reference guide documents common issues, solutions, and best practices enco
 5. [Resource Compilation Errors](#resource-compilation-errors)
 6. [Best Practices](#best-practices)
 7. [Project Structure Template](#project-structure-template)
+8. [APK Installation Issues](#apk-installation-issues)
 
 ---
 
@@ -462,6 +463,94 @@ override fun onDestroy() {
 - [Kotlin Android Extensions](https://kotlinlang.org/docs/android-overview.html)
 - [Material Design Guidelines](https://material.io/design)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+---
+
+## 📱 APK Installation Issues
+
+### Issue 1: "Package appears to be invalid" Error
+**Problem**: APK installation fails with "Package appears to be invalid" error
+
+**Common Causes:**
+1. **Corrupted APK** - APK file is incomplete or corrupted
+2. **Signing issues** - APK is not properly signed
+3. **Proguard conflicts** - Code obfuscation causes runtime issues
+4. **Java version mismatch** - Incompatible bytecode version
+
+**Solutions:**
+
+#### Fix 1: Disable Proguard for Testing
+```kotlin
+// app/build.gradle - Disable minification for release builds
+buildTypes {
+    release {
+        minifyEnabled false
+        shrinkResources false
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+}
+```
+
+#### Fix 2: Use Compatible Java Version
+```kotlin
+// app/build.gradle - Use Java 1.8 for better compatibility
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+
+kotlinOptions {
+    jvmTarget = '1.8'
+}
+```
+
+#### Fix 3: Add APK Validation in CI
+```yaml
+# .github/workflows/android-build.yml
+- name: Validate APK
+  run: |
+    echo "Validating APK files..."
+    for apk in ./apk-download/*.apk; do
+      if [ -f "$apk" ]; then
+        echo "Found APK: $apk"
+        ls -lh "$apk"
+        if [ -s "$apk" ]; then
+          echo "APK size is valid: $(du -h "$apk")"
+        else
+          echo "ERROR: APK is empty!"
+          exit 1
+        fi
+      fi
+    done
+```
+
+#### Fix 4: Generate Debug Keystore in CI
+```yaml
+- name: Generate debug keystore
+  run: |
+    mkdir -p ~/.android
+    echo "y" | keytool -genkey -v \
+      -keystore ~/.android/debug.keystore \
+      -storepass android \
+      -alias androiddebugkey \
+      -keypass android \
+      -keyalg RSA \
+      -keysize 2048 \
+      -validity 10000 \
+      -dname "CN=Android Debug,O=Android,C=US" || echo "Keystore already exists"
+```
+
+#### Fix 5: Alternative Installation Methods
+```bash
+# For testing, try installing debug APK instead
+./gradlew assembleDebug
+
+# Or use ADB install with specific flags
+adb install -r -t app-debug.apk
+
+# For release APK installation issues
+adb install -r -d app-release.apk
+```
 
 ---
 
