@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/welcome_title"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/welcome_subtitle"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:alpha="0.8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <LinearLayout
+        android:id="@+id/llButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGrantPermissions"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/grant_permissions"
+            android:textColor="?attr/colorPrimary"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="28dp"
+            app:strokeWidth="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToggleService"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/start_service"
+            android:textColor="@color/white"
+            android:backgroundTint="@android:color/transparent"
+            app:cornerRadius="28dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/open_settings"
+            android:textColor="@color/white"
+            android:backgroundTint="@android:color/transparent"
+            app:cornerRadius="28dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="2dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

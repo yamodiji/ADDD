@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Smart Drawer</string>
+    <string name="settings_title">Settings</string>
+    
+    <!-- Main Activity -->
+    <string name="welcome_title">Welcome to Smart Drawer</string>
+    <string name="welcome_subtitle">Your smart app launcher</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    <string name="start_service">Start Floating Widget</string>
+    <string name="stop_service">Stop Floating Widget</string>
+    <string name="open_settings">Settings</string>
+    
+    <!-- Permission dialogs -->
+    <string name="permission_overlay_title">Overlay Permission Required</string>
+    <string name="permission_overlay_message">Smart Drawer needs overlay permission to display the floating widget and app drawer on top of other apps.</string>
+    <string name="permission_grant">Grant Permission</string>
+    <string name="permission_cancel">Cancel</string>
+    
+    <!-- Settings -->
+    <string name="settings_widget_enabled">Enable Floating Widget</string>
+    <string name="settings_widget_enabled_summary">Show floating search widget on screen</string>
+    <string name="settings_gesture_enabled">Enable Swipe-up Gesture</string>
+    <string name="settings_gesture_enabled_summary">Open app drawer with swipe-up from home screen</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_dark_mode_summary">Use dark theme</string>
+    <string name="settings_layout_grid">Grid Layout</string>
+    <string name="settings_layout_grid_summary">Show apps in grid view</string>
+    <string name="settings_widget_size">Widget Size</string>
+    <string name="settings_auto_start">Auto-start on Boot</string>
+    <string name="settings_auto_start_summary">Automatically start widget when device boots</string>
+    
+    <!-- App Drawer -->
+    <string name="search_hint">Search apps...</string>
+    <string name="no_apps_found">No apps found</string>
+    <string name="loading_apps">Loading apps...</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_name">Smart Drawer Service</string>
+    <string name="notification_channel_description">Notification for floating widget service</string>
+    <string name="notification_title">Smart Drawer Active</string>
+    <string name="notification_content">Floating widget is running</string>
+    
+    <!-- Accessibility -->
+    <string name="content_description_app_icon">App icon</string>
+    <string name="content_description_search_icon">Search</string>
+    <string name="content_description_settings_icon">Settings</string>
+    <string name="content_description_close">Close</string>
+    <string name="content_description_floating_widget">Floating widget</string>
+    
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+</resources> 
