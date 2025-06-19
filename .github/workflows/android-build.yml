@@ -140,28 +140,67 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Download debug APK artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: debug-apk
+        path: ./debug-apk/
+        
     - name: Download release APK artifact
       uses: actions/download-artifact@v4
       with:
         name: release-apk
-        path: ./apk-download/
+        path: ./release-apk/
+        continue-on-error: true
         
     - name: Validate APK
       run: |
         echo "Validating APK files..."
-        for apk in ./apk-download/*.apk; do
+        
+        echo "=== DEBUG APK ==="
+        for apk in ./debug-apk/*.apk; do
           if [ -f "$apk" ]; then
-            echo "Found APK: $apk"
+            echo "Found debug APK: $apk"
             ls -lh "$apk"
-            # Check if APK is not empty
             if [ -s "$apk" ]; then
-              echo "APK size is valid: $(du -h "$apk")"
+              echo "Debug APK size is valid: $(du -h "$apk")"
             else
-              echo "ERROR: APK is empty!"
-              exit 1
+              echo "ERROR: Debug APK is empty!"
             fi
           fi
         done
+        
+        echo "=== RELEASE APK ==="
+        for apk in ./release-apk/*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found release APK: $apk"
+            ls -lh "$apk"
+            if [ -s "$apk" ]; then
+              echo "Release APK size is valid: $(du -h "$apk")"
+            else
+              echo "ERROR: Release APK is empty!"
+            fi
+          fi
+        done
+        
+    - name: Prepare APKs for release
+      run: |
+        mkdir -p ./final-apks/
+        
+        # Copy debug APK (primary for installation)
+        if [ -f ./debug-apk/*.apk ]; then
+          cp ./debug-apk/*.apk ./final-apks/Smart-Drawer-debug.apk
+          echo "Debug APK prepared for release"
+        fi
+        
+        # Copy release APK if available
+        if [ -f ./release-apk/*.apk ]; then
+          cp ./release-apk/*.apk ./final-apks/Smart-Drawer-release.apk
+          echo "Release APK prepared for release"
+        fi
+        
+        echo "Final APKs:"
+        ls -lh ./final-apks/
         
     - name: Get version name
       id: version
@@ -180,12 +219,6 @@ jobs:
         fi
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         
-    - name: List APK files
-      run: |
-        echo "Contents of apk-download directory:"
-        ls -la ./apk-download/
-        find ./apk-download/ -name "*.apk" -type f
-        
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
@@ -194,7 +227,22 @@ jobs:
         body: |
           ## Smart Drawer Release v${{ steps.version.outputs.version }}
           
-          ### Features
+          ### 📱 Installation Instructions
+          
+          **For easy installation, download the DEBUG APK:**
+          - `Smart-Drawer-debug.apk` - **RECOMMENDED for testing**
+          - Easier to install, more compatible with different devices
+          
+          **Alternative:**
+          - `Smart-Drawer-release.apk` - Optimized version (if available)
+          
+          ### 🛠️ Installation Steps
+          1. **Enable Unknown Sources**: Settings → Security → Unknown Sources
+          2. **Download APK**: Click on the APK file below
+          3. **Install**: Open the downloaded APK file
+          4. **Grant Permissions**: Allow overlay and other required permissions
+          
+          ### 🚀 Features
           - 🎯 Floating draggable widget overlay
           - 📱 Full-screen app drawer with search
           - 🔍 Real-time app filtering
@@ -202,18 +250,20 @@ jobs:
           - 🌙 Dark mode support
           - 🏁 Auto-start on boot
           
-          ### Installation
-          1. Download the APK below
-          2. Enable "Install from unknown sources"
-          3. Install and grant overlay permissions
-          4. Configure settings as desired
+          ### 📋 Technical Info
+          - **Target SDK:** 34 
+          - **Min SDK:** 23 (Android 6.0+)
+          - **APK Size:** < 3MB
+          - **Build Date:** ${{ github.event.head_commit.timestamp }}
+          - **Commit:** ${{ github.sha }}
           
-          **Target SDK:** 34 | **Min SDK:** 23 | **APK Size:** < 2.5MB
-          
-          ### Build Info
-          - Build Date: ${{ github.event.head_commit.timestamp }}
-          - Commit: ${{ github.sha }}
-        artifacts: ./apk-download/*.apk
+          ### 🔧 Troubleshooting
+          If installation fails:
+          1. Try the debug APK first
+          2. Clear any previous installations
+          3. Restart your device
+          4. Check if you have enough storage space
+        artifacts: ./final-apks/*
         draft: false
         prerelease: false
         allowUpdates: true
