@@ -3,6 +3,7 @@ package com.smartdrawer.app.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.smartdrawer.app.service.FloatingWidgetService
 import com.smartdrawer.app.utils.PreferenceManager
 import com.smartdrawer.app.utils.PermissionHelper
@@ -32,7 +33,13 @@ class BootReceiver : BroadcastReceiver() {
             permissionHelper.hasOverlayPermission()) {
             
             val serviceIntent = Intent(context, FloatingWidgetService::class.java)
-            context.startForegroundService(serviceIntent)
+            
+            // Use appropriate method based on Android version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
         }
     }
 }

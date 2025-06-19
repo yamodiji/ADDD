@@ -2,6 +2,7 @@ package com.smartdrawer.app
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
@@ -103,7 +104,12 @@ class MainActivity : AppCompatActivity() {
             stopService(serviceIntent)
             viewModel.setServiceRunning(false)
         } else {
-            startForegroundService(serviceIntent)
+            // Use appropriate method based on Android version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            } else {
+                startService(serviceIntent)
+            }
             viewModel.setServiceRunning(true)
         }
     }

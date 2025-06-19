@@ -1,7 +1,9 @@
 package com.smartdrawer.app
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.smartdrawer.app.databinding.ActivitySettingsBinding
@@ -25,8 +27,17 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         preferenceManager = PreferenceManager(this)
+        setupBackPressedCallback()
         setupUI()
         loadPreferences()
+    }
+
+    private fun setupBackPressedCallback() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun setupUI() {
@@ -74,7 +85,13 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun startFloatingService() {
         val serviceIntent = Intent(this, FloatingWidgetService::class.java)
-        startForegroundService(serviceIntent)
+        
+        // Use appropriate method based on Android version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
     }
 
     private fun stopFloatingService() {
@@ -92,7 +109,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 } 

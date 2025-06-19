@@ -59,7 +59,7 @@ class DrawerOverlay(private val context: Context) {
             onAppClick = { app ->
                 launchApp(app)
             },
-            onAppLongClick = { app ->
+            onAppLongClick = { _ ->
                 // TODO: Show context menu for pinning/unpinning
             }
         )
